@@ -1,0 +1,73 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+/**
+ * Write a description of class Play here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class Play extends World
+{
+    private int imageCount = 0;
+    private GreenfootImage bgImage = new GreenfootImage("sky_clouds_05.jpg");
+     
+    public void drawBackgroundImage() {
+        if (imageCount > bgImage.getHeight()) {
+            imageCount -= bgImage.getHeight();
+        }
+        int temp = imageCount;
+        getBackground().drawImage(bgImage, 0, temp);
+        getBackground().drawImage(bgImage, 0, temp - bgImage.getHeight());
+    }
+    public Play()
+    {    
+        super(400,700,1);
+        
+        played=true;
+        Player player=new Player();
+        addObject(player, 200, 600);
+    }
+    public static boolean played=false;
+    private int spawnEnemy=0;
+    private int faster=80;
+    private int timer=faster*5;
+    private int health=3;
+    private int spawnMeteor=150;
+    public void act() 
+    {
+        imageCount+=2;
+        drawBackgroundImage();
+        timer--;
+        if(timer<=0){
+            faster-=10;
+            if(faster<=0){
+                faster=80;
+                health++;
+            }
+            timer=faster*5;
+        }
+        if(spawnEnemy<=0){
+            for(int i=1;i<=5;i++){
+                if(Greenfoot.getRandomNumber(99)+1<5){
+                    addObject(new Treasure(),i*65,0);
+                }
+                else{
+                    addObject(new Enemy(health),i*65,0);
+                }
+            }
+            spawnEnemy=faster;
+        }
+        else{
+            spawnEnemy--;
+        }
+        if(spawnMeteor<=0){
+            if(Greenfoot.getRandomNumber(99)+1<30){
+                addObject(new Warning(),Greenfoot.getMouseInfo().getX(),700/2);
+            }
+            spawnMeteor=150;
+        }
+        else{
+            spawnMeteor--;
+        }
+    }
+}
